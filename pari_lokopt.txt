@@ -1,0 +1,75 @@
+{P=[
+  [ 0.7320505582472, 0.0000000283590, 0.6812503065467],
+  [-0.3660256738894, 0.6339745875074, 0.6812499016137],
+  [-0.3660256309517,-0.6339746051643, 0.6812499082519],
+  [ 0.5000000326984,-0.8660253849060, 0.0000001898611],
+  [ 0.4999999710090, 0.8660254205224, 0.0000001780664],
+  [-0.9999999999999,-0.0000000345883,-0.0000003659038],
+  [ 0.7320510568344, 0.0000000215290,-0.6812497707799],
+  [-0.3660251758589, 0.6339745801719,-0.6812501760244],
+  [-0.3660251314892,-0.6339746138797,-0.6812501684950]]};
+N=#P;
+{IKN=[[1,3,2],
+[1,2,5],
+[1,4,3],
+[1,7,4],
+[1,5,7],
+[2,3,6],
+[2,8,5],
+[2,6,8],
+[3,4,9],
+[3,9,6],
+[4,7,9],
+[5,8,7],
+[6,9,8],
+[7,8,9]]};
+lokopt(P,IKN,itmax)={
+my(N=#P,KA=matrix(7,N,i,j,0),KE=matrix(7,N,i,j,0),KN=vector(N),
+VSUM=vector(N),CX=vector(N),CY=vector(N),CZ=vector(N),VPREV=0,VNEW=0);
+\\rescale to radius 1
+for(k=1,N,P[k]=P[k]/sqrt(sum(j=1,3,P[k][j]^2)));
+\\ edges to surrounding points
+for(i=1,N,my(k=0);
+  for(L=1,#IKN,
+   if(IKN[L][1]==i,k++;KA[k,i]=IKN[L][2];KE[k,i]=IKN[L][3]);
+   if(IKN[L][2]==i,k++;KA[k,i]=IKN[L][3];KE[k,i]=IKN[L][1]);
+   if(IKN[L][3]==i,k++;KA[k,i]=IKN[L][1];KE[k,i]=IKN[L][2]));
+  KN[i]=k);
+\\ Initial volumes of local pyramids
+for(i=1,N,
+for(L=1,KN[i],my(j=KA[L,i],k=KE[L,i]);
+CX[i]=CX[i]-P[j][2]*P[k][3] + P[k][2]*P[j][3];
+CY[i]=CY[i]-P[j][3]*P[k][1] + P[k][3]*P[j][1];
+CZ[i]=CZ[i]-P[j][1]*P[k][2] + P[k][1]*P[j][2]);
+VSUM[i]=P[i][1]*CX[i]+P[i][2]*CY[i]+P[i][3]*CZ[i]);
+\\ iteration loop
+for(it=1,abs(itmax),my(iverbz=0);
+ for(ii=1,N,if(it%2,i=ii,i=N-ii+1);
+my(CB=sqrt(CX[i]^2+CY[i]^2+CZ[i]^2),PN=[CX[i]/CB,CY[i]/CB,CZ[i]/CB],
+VN=PN[1]*CX[i]+PN[2]*CY[i]+PN[3]*CZ[i]);
+if(itmax>0,print([it,i,VN,VSUM[i]]));
+if(VN>VSUM[i],if(itmax>0,print("Improved at P",i,":",VN-VSUM[i]));iverbz++;
+P[i]=PN;
+for(L=1,KN[i],my(M=KA[L,i]);CX[M]=0;CY[M]=0;CZ[M]=0;
+ for(LL=1,KN[M],my(j=KA[LL,M],k=KE[LL,M]);
+  CX[M]=CX[M]-P[j][2]*P[k][3] + P[k][2]*P[j][3];
+  CY[M]=CY[M]-P[j][3]*P[k][1] + P[k][3]*P[j][1];
+  CZ[M]=CZ[M]-P[j][1]*P[k][2] + P[k][1]*P[j][2]
+    );
+ VSUM[M]=P[M][1]*CX[M]+P[M][2]*CY[M]+P[M][3]*CZ[M])
+ ));
+VNEW=0;
+for(L=1,#IKN,my(i=IKN[L][1],j=IKN[L][2],k=IKN[L][3]);
+VNEW=VNEW-P[i][1]*(P[j][2]*P[k][3]-P[k][2]*P[j][3])
+         -P[i][2]*(P[j][3]*P[k][1]-P[k][3]*P[j][1])
+         -P[i][3]*(P[j][1]*P[k][2]-P[k][1]*P[j][2]));
+if(VNEW>VPREV,print("it=",it," ",VNEW/6);VPREV=VNEW,
+             print(iverbz," no improvement:",VNEW/6));
+if(iverbz<N\3,print("No improvement in iteration ",it);break));
+for(k=1,N,print([k,P[k]*P[k]~]));
+my(amin=oo,amax=-amin);
+for(k=1,#IKN,my(d1=sum(j=1,3,(P[IKN[k][1]][j]-P[IKN[k][2]][j])^2),
+d2=sum(j=1,3,(P[IKN[k][1]][j]-P[IKN[k][3]][j])^2),
+d3=sum(j=1,3,(P[IKN[k][1]][j]-P[IKN[k][3]][j])^2));
+amin=min(amin,vecmin([d1,d2,d3]));amax=max(amax,vecmax([d1,d2,d3])));
+[VPREV/6,amin,amax]};
