@@ -1,0 +1,29 @@
+ 742 Aug 12  1992 for034.dat
+ 952 Mar 31  1992 for035.dat
+1183 Mar 31  1992 for036.dat
+1414 Mar 31  1992 for037.dat
+1645 Mar 31  1992 for038.dat
+1876 Mar 31  1992 for039.dat
+2107 Mar 31  1992 for040.dat
+2338 Mar 31  1992 for041.dat
+2569 Aug 12  1992 for042.dat
+2800 Mar 31  1992 for043.dat
+3031 Mar 31  1992 for044.dat
+3262 Mar 31  1992 for045.dat
+3493 Mar 31  1992 for046.dat
+3724 Mar 31  1992 for047.dat
+3955 Sep 10  1992 for048.dat
+4186 Mar 31  1992 for049.dat
+4417 Mar 30  1992 for050.dat
+4648 Dec  4  1992 for051.dat
+4878 Mar 19  2003 for052.dat
+5110 Dec  4  1992 for053.dat
+5340 Mar 19  2003 for054.dat
+5572 Dec 23  1992 for055.dat
+5803 Apr 22  1993 for056.dat
+6034 Apr 30  1993 for057.dat
+6480 Nov 16 06:27 for058.dat
+6719 Nov 17 04:09 for059.dat
+6958 Nov 17 04:23 for060.dat
+6958 Mar  4  1993 for061.dat
+7436 Nov 17 04:37 for062.dat

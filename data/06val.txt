@@ -1,0 +1,5 @@
+Vertices:  6
+Val    3  4  5
+Mesh
+  1:   2  2  2
+  2:   0  6
